@@ -1,45 +1,45 @@
-# munch
+# Munch
 
-campus canteen ordering system for jiit noida. place orders, track them live, manage kitchen queue, monitor inventory.
+Campus canteen ordering system for JIIT Noida. Place orders, track them live, manage the kitchen queue, and monitor inventory.
 ---
 
-## what it does
+## What It Does
 
-students browse a live menu, add items to cart, pay, and track their order through kitchen stages in real time. the admin side handles the kitchen queue, inventory levels, restock suggestions, and daily sales. all core logic lives in the database — triggers handle stock deduction, price snapshots, audit trails, and state machine validation.
+Students browse a live menu, add items to the cart, pay, and track their orders through kitchen stages in real time. The admin side handles the kitchen queue, inventory levels, restock suggestions, and daily sales. All core logic lives in the database — triggers handle stock deduction, price snapshots, audit trails, and state machine validation.
 
-## stack
+## Stack
 
-| layer | tech |
+| Layer | Tech |
 |---|---|
-| database | postgresql 17 (supabase) |
-| backend | fastapi + psycopg v3, python 3.14 |
-| frontend | vanilla js + html/css, jetbrains mono |
+| Database | PostgreSQL 17 (Supabase) |
+| Backend | FastAPI + psycopg v3, Python 3.14 |
+| Frontend | Vanilla JS + HTML/CSS, JetBrains Mono |
 
 
-## running it
+## Running It
 
 ```bash
-# backend
+# Backend
 cd backend
 uv run uvicorn main:app --reload --port 8000
 
-# frontend (separate terminal)
+# Frontend (separate terminal)
 cd frontend
 python3 -m http.server 5173
 ```
 
-open `http://localhost:5173`. needs `.env` in the project root with `DATABASE_URL`.
+Open `http://localhost:5173`. A `.env` file in the project root with `DATABASE_URL` is required.
 
-## database setup
+## Database Setup
 
 ```bash
 cd db
 python3 migrate.py      # runs migrations 00–06 in order
 ```
 
-> this wipes and rebuilds the full schema, then seeds all 84 menu items and baseline data.
+> This wipes and rebuilds the full schema, then seeds all 84 menu items and baseline data.
 
-## structure
+## Structure
 
 ```
 db/
@@ -48,8 +48,8 @@ db/
   04_seed.sql            84 menu items, inventory, 2 baseline orders
   05_views_indexes.sql   views + 8 indexes
   06_queries.sql         17 analytical queries
-  migrate.py             migration runner
-backend/                 fastapi routes
-frontend/                single-page app (menu, cart, tracker, admin)
-docs/report.md           full project report (normalization, indexing, etc.)
+  migrate.py             Migration runner
+backend/                 FastAPI routes
+frontend/                Single-page app (menu, cart, tracker, admin)
+docs/report.md           Full project report (normalization, indexing, etc.)
 ```
