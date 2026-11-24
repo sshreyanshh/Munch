@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>munch - jiit annapurna</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="top-nav">
+    <div class="top-nav-inner">
+      <div class="brand-section" id="brand-logo" style="cursor: pointer;">
+        <span class="brand-title">munch</span>
+        <span class="brand-outlet">/ jiit annapurna</span>
+      </div>
+
+      <nav class="nav-links">
+        <button class="nav-tab active" data-view="menu">menu</button>
+        <button class="nav-tab" data-view="cart">cart <span class="badge" id="cart-badge">0</span></button>
+        <button class="nav-tab" data-view="tracker">tracker</button>
+        <button class="nav-tab" data-view="history">orders</button>
+        <button class="nav-tab" data-view="review">reviews</button>
+        <button class="nav-tab" data-view="admin">admin</button>
+      </nav>
+
+      <div class="top-controls">
+        <div class="student-picker-wrapper">
+          <span>user:</span>
+          <select id="student-picker"></select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="app-container">
+
+    <section class="view-panel active" id="view-menu">
+      <div class="section-header">
+        <div>
+          <h1 class="section-title">canteen menu</h1>
+          <p class="section-subtitle">jiit annapurna &bull; ABB-III sector 62</p>
+        </div>
+      </div>
+
+      <div class="filter-row">
+        <div class="category-chips" id="category-chips">
+          <button class="chip active" data-cat="ALL">all items</button>
+        </div>
+
+        <div class="search-input-wrapper">
+          <input type="text" class="search-input" id="menu-search" placeholder="search items...">
+        </div>
+      </div>
+
+      <div class="menu-grid" id="menu-grid"></div>
+    </section>
+
+    <section class="view-panel" id="view-cart">
+      <div class="section-header">
+        <div>
+          <h1 class="section-title">cart and checkout</h1>
+          <p class="section-subtitle">review items and select payment method</p>
+        </div>
+      </div>
+
+      <div class="cart-layout">
+        <div class="cart-items-card">
+          <div id="cart-items-container"></div>
+          <div id="cart-canteen-warning" style="display: none; font-size: 0.75rem; color: #a1a1aa; margin-top: 1rem;">
+            [!] items must be from the same outlet.
+          </div>
+        </div>
+
+        <div class="cart-summary-card">
+          <h3 style="margin-bottom: 0.75rem; font-size: 0.95rem; font-weight: 700;">summary</h3>
+          <div class="summary-row">
+            <span>user</span>
+            <span id="checkout-student-name" style="color: #ffffff;">-</span>
+          </div>
+          <div class="summary-row">
+            <span>outlet</span>
+            <span id="checkout-canteen-name" style="color: #ffffff;">-</span>
+          </div>
+          <div class="summary-row">
+            <span>subtotal</span>
+            <span id="checkout-subtotal" style="color: #ffffff;">0.00</span>
+          </div>
+          <div class="summary-row">
+            <span>fee</span>
+            <span style="color: #a1a1aa;">0.00</span>
+          </div>
+          <div class="summary-row total">
+            <span>total</span>
+            <span id="checkout-total">0.00</span>
+          </div>
+
+          <div class="payment-options">
+            <span style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.2rem;">payment method</span>
+            <label class="payment-label">
+              <input type="radio" name="payment-method" value="UPI" checked>
+              <span class="payment-details">upi (instant)</span>
+            </label>
+            <label class="payment-label">
+              <input type="radio" name="payment-method" value="CARD">
+              <span class="payment-details">debit / credit card</span>
+            </label>
+            <label class="payment-label">
+              <input type="radio" name="payment-method" value="WALLET">
+              <span class="payment-details">campus wallet</span>
+            </label>
+            <label class="payment-label">
+              <input type="radio" name="payment-method" value="CASH">
+              <span class="payment-details">cash at counter</span>
+            </label>
+          </div>
+
+          <button class="btn-primary" id="btn-place-order" disabled>
+            <span>place order</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="view-panel" id="view-tracker">
+      <div class="section-header">
+        <div>
+          <h1 class="section-title">order tracker</h1>
+          <p class="section-subtitle">real-time polling every 3.5 seconds</p>
+        </div>
+      </div>
+
+      <div class="tracker-card" id="tracker-card">
+        <div style="text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
+          <p style="font-size: 0.85rem;">[ no active order selected ]</p>
+          <button class="btn-primary" style="max-width: 180px; margin: 1rem auto 0;" onclick="window.switchView('menu')">browse menu</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="view-panel" id="view-history">
+      <div class="section-header">
+        <div>
+          <h1 class="section-title">order history</h1>
+          <p class="section-subtitle">past receipts and line items</p>
+        </div>
+      </div>
+
+      <div id="history-container"></div>
+    </section>
+
+    <section class="view-panel" id="view-review">
+      <div class="section-header">
+        <div>
+          <h1 class="section-title">item reviews</h1>
+          <p class="section-subtitle">ratings and feedback</p>
+        </div>
+      </div>
+
+      <div class="cart-layout">
+        <div class="cart-items-card">
+          <h3 style="margin-bottom: 1rem; font-size: 0.95rem; font-weight: 700;">rate an item</h3>
+          <form id="review-form">
+            <div class="form-group">
+              <label for="review-item-select">select item</label>
+              <select id="review-item-select" class="form-control" required></select>
+            </div>
+
+            <div class="form-group">
+              <label>rating (1 to 5)</label>
+              <div id="star-rating" style="display: flex; gap: 0.4rem; font-size: 1.1rem; cursor: pointer; color: var(--text-muted);">
+                <span data-star="1">*</span>
+                <span data-star="2">*</span>
+                <span data-star="3">*</span>
+                <span data-star="4">*</span>
+                <span data-star="5">*</span>
+              </div>
+              <input type="hidden" id="review-rating-val" value="5">
+            </div>
+
+            <div class="form-group">
+              <label for="review-comment">comments</label>
+              <textarea id="review-comment" class="form-control" rows="3" placeholder="enter review comments..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn-primary" style="margin-top: 0.5rem;">
+              <span>submit review</span>
+            </button>
+          </form>
+        </div>
+
+        <div class="cart-summary-card">
+          <h3 style="margin-bottom: 1rem; font-size: 0.95rem; font-weight: 700;">recent reviews</h3>
+          <div id="recent-reviews-feed" style="display: flex; flex-direction: column; gap: 0.75rem;"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view-panel" id="view-admin">
+      <div class="section-header">
+        <div>
+          <h1 class="section-title">operations & analytics</h1>
+          <p class="section-subtitle">kitchen management & inventory control</p>
+        </div>
+        <div>
+          <button class="btn-add" id="btn-open-purchase-modal">
+            <span>+ record purchase</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="admin-stats-grid">
+        <div class="stat-card">
+          <h4>total sales</h4>
+          <div class="val" id="kpi-sales">18,930</div>
+        </div>
+        <div class="stat-card">
+          <h4>orders processed</h4>
+          <div class="val" id="kpi-orders">145</div>
+        </div>
+        <div class="stat-card">
+          <h4>low-stock items</h4>
+          <div class="val" id="kpi-alerts">3 items</div>
+        </div>
+        <div class="stat-card">
+          <h4>avg rating</h4>
+          <div class="val" id="kpi-rating">4.7 / 5.0</div>
+        </div>
+      </div>
+
+      <div class="admin-nav-tabs">
+        <button class="admin-tab active" data-subtab="kitchen">kitchen queue</button>
+        <button class="admin-tab" data-subtab="low-stock">low-stock inventory</button>
+        <button class="admin-tab" data-subtab="suggestions">restock suggestions</button>
+        <button class="admin-tab" data-subtab="top-items">top items</button>
+        <button class="admin-tab" data-subtab="sales">daily sales report</button>
+        <button class="admin-tab" data-subtab="audit">audit log</button>
+      </div>
+
+      <div class="admin-panel-content">
+        <div class="admin-subpanel" id="subpanel-kitchen">
+          <h3 style="margin-bottom: 0.75rem; font-size: 0.9rem; font-weight: 700;">kitchen order queue</h3>
+          <div id="kitchen-orders-container"></div>
+        </div>
+
+        <div class="admin-subpanel" id="subpanel-low-stock" style="display: none;">
+          <h3 style="margin-bottom: 0.75rem; font-size: 0.9rem; font-weight: 700;">items below reorder level</h3>
+          <div id="low-stock-container"></div>
+        </div>
+
+        <div class="admin-subpanel" id="subpanel-suggestions" style="display: none;">
+          <h3 style="margin-bottom: 0.75rem; font-size: 0.9rem; font-weight: 700;">restock suggestions (cursor procedure)</h3>
+          <div id="suggestions-container"></div>
+        </div>
+
+        <div class="admin-subpanel" id="subpanel-top-items" style="display: none;">
+          <h3 style="margin-bottom: 0.75rem; font-size: 0.9rem; font-weight: 700;">top selling items</h3>
+          <div id="top-items-container"></div>
+        </div>
+
+        <div class="admin-subpanel" id="subpanel-sales" style="display: none;">
+          <h3 style="margin-bottom: 0.75rem; font-size: 0.9rem; font-weight: 700;">daily revenue</h3>
+          <div id="sales-report-container"></div>
+        </div>
+
+        <div class="admin-subpanel" id="subpanel-audit" style="display: none;">
+          <div style="display: flex; gap: 0.75rem; align-items: center; margin-bottom: 1rem;">
+            <span style="font-size: 0.85rem; font-weight: 600;">order id:</span>
+            <input type="number" id="audit-order-id-input" class="form-control" style="width: 120px;" placeholder="1" value="1">
+            <button class="btn-add" id="btn-fetch-audit">inspect</button>
+          </div>
+          <div id="audit-log-results"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="modal-overlay" id="purchase-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">record inventory purchase</h3>
+        <button class="modal-close" id="purchase-modal-close">[x]</button>
+      </div>
+      <div class="modal-body">
+        <form id="purchase-form">
+          <div class="form-group">
+            <label for="purchase-canteen-id">outlet</label>
+            <select id="purchase-canteen-id" class="form-control" required>
+              <option value="1">jiit annapurna</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="purchase-supplier-id">supplier</label>
+            <select id="purchase-supplier-id" class="form-control" required>
+              <option value="1">mother dairy delhi milk scheme</option>
+              <option value="2">haldiram foods supply ltd</option>
+              <option value="3">nestle professional india</option>
+              <option value="4">verma farm fresh vegetables</option>
+              <option value="5">britannia b2b distributors</option>
+              <option value="6">dharampal premchand spices</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="purchase-inventory-id">inventory item</label>
+            <select id="purchase-inventory-id" class="form-control" required>
+              <option value="5">full cream milk (l)</option>
+              <option value="6">tea leaves (kg)</option>
+              <option value="10">bread loaves (pack)</option>
+              <option value="1">potatoes (aloo) (kg)</option>
+              <option value="14">maggi noodle packs (pack)</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+            <div>
+              <label for="purchase-qty">quantity</label>
+              <input type="number" step="0.1" id="purchase-qty" class="form-control" placeholder="20.0" required>
+            </div>
+            <div>
+              <label for="purchase-cost">cost (rs)</label>
+              <input type="number" step="0.5" id="purchase-cost" class="form-control" placeholder="1000.0" required>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary" style="margin-top: 0.5rem;">
+            <span>save purchase</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
